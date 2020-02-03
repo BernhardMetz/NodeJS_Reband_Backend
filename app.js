@@ -10,7 +10,7 @@ app.use(express.json())
 
 mongoose.connect(process.env.DB_CONNECTION, {useNewUrlParser: true}, (err) => {
     if (err) throw err
-    else console.log(`Successfully connected to ${mongo_uri}`)
+    else console.log(`Successfully connected to ${process.env.DB_CONNECTION}`)
 })
 
 const PORT = process.env.PORT || 3001
