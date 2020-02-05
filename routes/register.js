@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 router.get('/',  (req, res) => {
     res.send('We are on Register page')
@@ -51,9 +52,27 @@ router.post('/updatepass', async (req, res) => {
     } catch(err) {
         return res.status(400).json({message: err})
     }
+})
 
-    
-    
+router.post('/me', async (req, res) => {
+    const token =
+    req.body.token ||
+    req.query.token ||
+    req.headers['x-access-token'] ||
+    req.cookies.token;
+    if (!token)
+        return res.json({message: 'Unauthorized: No token provided'})
+    try {
+        const authData = await jwt.verify(token, process.env.SECRET)
+        if (!authData)
+            return res.json({message: 'Token has been expired!'})
+        const searchedUser = await User.findOne({'email' : authData.email})
+        if (!searchedUser)
+            return res.json({message: 'Wrong token!'})
+        return res.json({user:searchedUser})
+    } catch(err) {
+        res.json({message: 'Token issue! Please try again.'})
+    }
 })
 
 module.exports = router

@@ -1,8 +1,7 @@
 const express = require('express')
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = require('../models/User')
-const Token=require('../models/Token');
 const bcrypt = require('bcrypt')
 
 router.get('/',  (req, res) => {
@@ -20,7 +19,7 @@ router.post('/', async (req, res) => {
         var isEqual = await bcrypt.compare(password, searchedUser.password)
                 // Issue token
         if (isEqual) {
-            const payload = {'email':email};
+            const payload = {'email': email};
             const token = jwt.sign(payload, process.env.SECRET, {
                 expiresIn: '1h'
             });
