@@ -2,6 +2,17 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 const UserSchema = mongoose.Schema({
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
+        type: String,
+        required: true
+    },
+    discordid: {
+        type: String,
+    },
     email: {
         type: String,
         required: true,
@@ -12,11 +23,5 @@ const UserSchema = mongoose.Schema({
         required: true
     }
 })
-
-  
-UserSchema.methods.isCorrectPassword = async (password) => {
-    const hash = await bcrypt.hash(password, 10)
-    await bcrypt.compare(password, hash)
-}
 
 module.exports = mongoose.model('User', UserSchema)
