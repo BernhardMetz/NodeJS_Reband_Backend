@@ -14,31 +14,21 @@ router.post('/', async (req, res) => {
     const {email, password} = req.body
 
     try {
-        const searchedUser = await User.findOne({'email' : email})
+        let searchedUser = await User.findOne({'email' : email})
         if (!searchedUser)
             return res.json({message: 'Incorrect email or password'})
         var isEqual = await bcrypt.compare(password, searchedUser.password)
                 // Issue token
         if (isEqual) {
-            /*const cur_time=Date.now();
-            const payload = {'email':email,'time':cur_time};
-    
+            const payload = {'email':email};
             const token = jwt.sign(payload, process.env.SECRET, {
-                expiresIn: '24h'
+                expiresIn: '1h'
             });
-    
-            const token_item = new Token({ email, cur_time, token });
-            
-            await token_item.save(function(err) {
-                if (err) {
-                    res.status(500)
-                       .send("Error logging in please try again.");
-                } else {
-                   res.cookie('token', token, { httpOnly: true })
-                      .status(200).send(token);
-                }
-            });*/
-            return res.json(searchedUser)
+
+            return res.json({
+                user: searchedUser,
+                token
+            })
         }
         return res.json({message: 'Invalid email or password'})
     } catch(err) {
